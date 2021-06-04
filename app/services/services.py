@@ -31,18 +31,13 @@ class KenzieSerieServices():
         KenzieSerieServices.create_table(cur)
 
         cur.execute(
-        """
-        INSERT INTO ka_series (serie, seasons, released_date, genre, imdb_rating)
-        VALUES
-            ('%s', '%s', '%s', '%s', '%s')
-        RETURNING *;
-        """ 
-        % (
-        serie_data.serie,  
-        serie_data.seasons,
-        serie_data.released_date,  
-        serie_data.genre,  
-        serie_data.imdb_rating)
+            """
+            INSERT INTO ka_series (serie, seasons, released_date, genre, imdb_rating)
+            VALUES
+                (%(serie)s, %(seasons)s, %(released_date)s, %(genre)s, %(imdb_rating)s)
+            RETURNING *;
+            """, 
+            serie_data.__dict__
         )
 
         created_serie = cur.fetchone()
@@ -84,9 +79,9 @@ class KenzieSerieServices():
         """
         SELECT * FROM ka_series
         WHERE
-            id = '%s';
-        """
-        % id
+            id = %(id)s;
+        """,
+        {"id": id}
         )
 
         fieldnames = [i[0] for i in cur.description]
